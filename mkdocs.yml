@@ -1,1 +1,4 @@
-site_name: My Docs
+site_name: Apollo-AF Docs
+nav:
+- Study Coordinators: 'study_coordinators.md'
+- Developers: 'developers.md'

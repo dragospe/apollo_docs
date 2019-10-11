@@ -1,17 +1,16 @@
-# Welcome to MkDocs
+# Apollo Docs
 
-For full documentation visit [mkdocs.org](http://mkdocs.org).
+This is the documentation website for the Apollo project.
 
-## Commands
+##Audience
+Are you a 
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs help` - Print this help message.
+* [Developer?](developers/index.html)
+* [Study Coordinator?](study_coordinators/index.html)
 
-## Project layout
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+## Contact
+For other inquires, [email us.](mailto:apollo-af@urmc.rochester.edu)
+
+
+
