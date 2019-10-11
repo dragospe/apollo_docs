@@ -131,7 +131,7 @@ the database can be initialized with the following command
 
 Gunicorn should be invoked as
 
-    gunicorn --error_logfile FILE wsgi:app 
+    gunicorn --error-logfile FILE wsgi:app 
 
 Gunicorn launches as a daemon process automatically; if you invoke (as above) in
 an ssh session and put it as a background process, it will persist beyond the
