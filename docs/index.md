@@ -5,8 +5,8 @@ This is the documentation website for the Apollo project.
 ##Audience
 Are you a 
 
-* [Developer?](developers/index.html)
-* [Study Coordinator?](study_coordinators/index.html)
+* [Developer?](developers)
+* [Study Coordinator?](study_coordinators)
 
 
 ## Contact

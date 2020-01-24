@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Apollo-AF Docs</title>
+        <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../../">Apollo-AF Docs</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../../../study_coordinators/">Study Coordinators</a>
+                            </li>
+                            <li >
+                                <a href="../../">Developers</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#apollo_flask">apollo_flask</a></li>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#project-layout">Project Layout</a></li>
+            <li><a href="#installation">Installation</a></li>
+            <li><a href="#usageinvocations">Usage/Invocations</a></li>
+            <li><a href="#testing">Testing</a></li>
+            <li><a href="#configuration">Configuration</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="apollo_flask">apollo_flask</h1>
+<p>A  repo to build the OAuth and API website for the apollo project.</p>
+<h2 id="overview">Overview</h2>
+<p>Apollo's main purpose is to obtain near-real-time data from wearable devices and combine it with self-reported and clinical data with the goal of subjecting it to machine-learning analysis. In order to obtain near-real-time data, we are integrating with providers of such data. Apollo-flask is the part of the project that manages the following:</p>
+<ul>
+<li>Receiving permission from a data provided (e.g. Garmin or Google Fit) to utilize their API.</li>
+<li>Provideing platform for our users to grant (and revoke) access to their data via the data provider.</li>
+<li>Securely storing user credentials, authentication, and authorization data.</li>
+<li>Receiving and securely storing user data as provided by the data provider.</li>
+</ul>
+<p>At this time, Garmin Connect is the only data provider implemented.</p>
+<h3 id="technologies-used">Technologies Used:</h3>
+<ul>
+<li>Python 3<ul>
+<li>Flask (web framework)</li>
+<li>Gunicorn (WSGI application server)</li>
+<li>SQLalchemy (database interconnection library)</li>
+<li>Pytest (Unit Testing)</li>
+<li>rauth (Oauth client integration)</li>
+</ul>
+</li>
+<li>Nginx (web server)</li>
+<li>Postgresql 11 (database server)</li>
+</ul>
+<h2 id="project-layout">Project Layout</h2>
+<h3 id="file-organization">File Organization</h3>
+<p>The project is organized, at the top level, into the following directories:</p>
+<ul>
+<li><code>apollo_flask</code>: containing the code needed to run the webserver.</li>
+<li><code>nginx</code>: containing an nginx configuration file to setup the site.</li>
+<li><code>tests</code>: containing unit tests.</li>
+</ul>
+<p>In the top level directory, there are also some important files:
+* <code>setup.*</code>: packaging files
+* <code>wsgi.py</code>: The file to point gunicorn at.</p>
+<p>The <code>apollo_flask</code> folder's <code>__init__.py</code> contains the code necessary to create the flask app and register blueprints to it, as well as set the application's environment (i.e., testing, development, or production) and load configuration dynamically. The <code>apollo_flask</code> folder also contains flask blueprints for handling oauth and the ingestion of data sent from the garmin health API.</p>
+<p>Inside the <code>apollo_flask</code> folder, there exists a <code>db</code> folder, containing an <code>__init__.py</code> file that sets up context management for database queries (the <code>session_scope()</code> function) as well as flask commands to initialize the database. The <code>db</code> folder includes a <code>models</code> folder containing data models for user authentication and garmin wellness data, as well as library imports. </p>
+<h4 id="data-model">Data Model</h4>
+<p>The database is broken into schemas handling user authentication and credentials (the <code>garmin_oauth</code> schema) and wellness data (the <code>garmin_wellness</code> schema). Thus, database queries need to be written with the schema name prepended; i.e.,</p>
+<pre><code>SELECT * FROM garmin_wellness.daily_summary
+</code></pre>
+<p>The table schema for each of the database schemas is stored in a separate folder, with (generally) separate files for each table. Each file contains an import of the form</p>
+<pre><code>    from apollo_flask.db.models.lib import *
+</code></pre>
+<p>which imports various sqlalchemy data types and utilities, as well as declares some apollo_flask-unqiue data types. <em>If most data model classes will require a particular import, this is where it should be stored.</em></p>
+<p>Generally, we try to centralize our object-relational mapping around the <code>garmin_oauth.user_id</code> table; both authentication data and currently implemented wellness data reference the <code>user_id.user_id</code> attribute as a foreign key, and sqlalchemy relationships exist between all relevant tables. This means that <em>most</em> operations involving sqlalchemy should be able to query a user and retrieve all relevant data about that user without extra effort.</p>
+<p>Class and attribute names are written in a style generally consistent with the rest of the Apollo project, <strong>except</strong> the names of the API endpoints, which are named following the conventions set by Garmin exactly. Garmin itself uses a a fairly verbose (and fairly <em>undocumented</em>) CamelCase naming convention; thus, when renaming attributes in JSON responses to fit our data model, it is highly likely that some spelling errors will slip through. Be careful. </p>
+<p>If writing extra data models, be sure to add them to the appropriate
+ <code>__init__.py</code> file so that they are imported with their package. In addition, 
+if more schemas are added the <code>SCHEMA_LIST</code> variable in the
+<code>apollo_flask/db/__init__.py</code> file must be updated.</p>
+<h3 id="authentication-flow">Authentication Flow</h3>
+<p>Authentication is done via OAuth 1 through the garmin health API. Full details are available via the specification available on the API website. The code handling consent, de-registration, and callbacks is in <code>apollo_flask/garmin_oauth.py</code>. Most of the nitty-gritty is handling by the <code>rauth</code> library. All authentication data, including access tokens, UIDs, request tokens, and active user booleans are stored in the <code>garmin_oauth</code> schema in the database. </p>
+<h4 id="api-endpoints">API Endpoints</h4>
+<p><strong>oauth/garmin/consent:</strong></p>
+<p>When an end user visits this endpoint (currently linked on the homepage as "Authorize Garmin Connect"), it triggers flask to ask for a request token from Garmin. When it receives one, it stores it in the database, and redirects the user to a consent page on the Garmin website along with the public half of the request token.</p>
+<p><img alt="Consent Endpoint Flow" src="img/consent.png" /></p>
+<p><strong>oauth/garmin/callback:</strong></p>
+<p>After a user has consented on the garmin website, they are redirected to this endpoint with an access token that allows us to access their data. This access token is stored in the database and the user is marked as active.</p>
+<p><img alt="Callback Endpoint Flow" src="img/callback.png" /></p>
+<p><strong>oauth/garmin/deregistration:</strong></p>
+<p>When a user wishes to revoke access, they must go to the Garmin Connect website and deregister our application. Garmin then POSTs a deregistration response to this endpoint to notify us that this has occured. Currently, this causes the application to mark the user as inactive in the database; in the future, we may require some additional handling.</p>
+<p><img alt="Deregistration Endpoint Flow" src="img/dereg.png" /></p>
+<h3 id="data-ingestion-flow">Data Ingestion Flow</h3>
+<p>The Garmin API offers two methods of sending data to clients: <em>push</em> or <em>ping</em>. Currently, we use the <em>push</em> method. 
+When data is synced from a user's device to Garmin Connect, Garmin POSTs a request containing this data (in a JSON format) to our specified API endpoints. One or more data points (typically some form of "Wellness summary") is contained in each JSON object.</p>
+<p>The currently-implemented Garmin API endpoints for <code>apollo_flask</code> all have the prefix <code>api_client/garmin/</code>.</p>
+<p>When Flask recieves a request at this endpoint, it dispatches a method via the <code>garmin_api_client</code> blueprint. This method</p>
+<ul>
+<li>Parses the request into the appropriate atomic parts (e.g., constructs a list of individual activity summaries)</li>
+<li>For each atomic part, constructs a sqlalchemy object out of the JSON data</li>
+<li>For each created object, compares it to the existing data in the database, and determines whether the incoming data creates a new record, updates an existing one, or is older than the existing data.</li>
+<li>Returns a response to the garmin API upon success.</li>
+</ul>
+<p><img alt="Data Ingestion Flow" src="img/data_ingest.png" /></p>
+<h2 id="installation">Installation</h2>
+<p>Navigate to the project directory and run</p>
+<pre><code>pip3 install -e .
+</code></pre>
+<p>to install the package in editable mode.</p>
+<h3 id="requirements">Requirements</h3>
+<p>The project is written in python 3.6. Other versions of python will probably
+work, but haven't been tested.</p>
+<h3 id="packages">Packages</h3>
+<p>Dependencies <em>should</em> be installed automatically with the above command. If they
+are not, the primary libraries you will need are sqlalchemy, rauth, flask,
+requests, and pytest.</p>
+<h3 id="deployment">Deployment</h3>
+<p>An ansible playbook/role is forthcoming, after it is decided how the database 
+will be setup.</p>
+<h2 id="usageinvocations">Usage/Invocations</h2>
+<p>Once the web application is properly installed, nginx and gunicorn should be 
+run as daemon processes. Project-specific invocations are given below.</p>
+<h3 id="flask">Flask</h3>
+<p>After setting the <code>FLASK_APP</code> environment variable to <code>wsgi:app</code> (or equivalent),
+the database can be initialized with the following command</p>
+<pre><code>flask init-db
+</code></pre>
+<h3 id="gunicorn">Gunicorn</h3>
+<p>Gunicorn should be invoked as</p>
+<pre><code>gunicorn --error-logfile FILE wsgi:app
+</code></pre>
+<p>Gunicorn launches as a daemon process automatically; if you invoke (as above) in
+an ssh session and put it as a background process, it will persist beyond the
+session.</p>
+<h2 id="testing">Testing</h2>
+<p>A blank database, mock client, and a dummy UID (corresponding to the author) is 
+loaded for many of the tests. The tests cannot (currently) be run in parallel; 
+if the database is in use, sqlalchemy will not be able to re-initialize it 
+before running the next test.</p>
+<p>Testing configuration options and fixtures are declared in the
+<code>tests/conftest.py</code> file.</p>
+<p>The <code>test_garmin_api_client</code> suite could use some improvement. Currently, it 
+tests for the presence of a handful of object attributes in the database, as 
+well as for validity of assumptions about sqlalchemy, flask, and the garmin API.
+This should be expanded with more robust (and perhaps dynamic) test data.</p>
+<p>To run the entire testing suite, <code>cd</code> into the <code>apollo_site</code> directory and run
+<code>pytest</code> or <code>python3 -m pytest</code>, depending on your environment. </p>
+<h2 id="configuration">Configuration</h2>
+<p>Configuration data for the flask app should be stored in a
+<code>apollo_site/instance/config.py</code> file. A sample file is given below; the options
+set are <strong>required</strong>.</p>
+<pre><code>import os 
+GARMIN_CONSUMER_KEY = 'consumer_key' 
+GARMIN_CONSUMER_SECRET = 'consumer_secret' 
+os.environ['DATABASE_URI'] = 'postgresql://postgres@127.0.0.1:5432/apollo_site.db' 
+DEFAULT_DATABASE_URI = 'postgresql://postgres@127.0.0.1:5432/postgres' 
+DATABASE_NAME = 'apollo_site.db'
+</code></pre>
+<p>The <code>setup.py</code> and <code>setup.cfg</code> are configuration files for <code>setuptools</code> 
+packaging and <code>pytest</code>, respectively.</p>
+<h3 id="web-application">Web Application</h3>
+<p>By default, gunicorn listens on 127.0.01:8000, and is proxied via nginx.</p>
+<h3 id="database">Database</h3>
+<h4 id="testing_1">Testing</h4>
+<p>The test suite constructs a new database from scratch for each test. This means 
+that the tests (as currently written) cannot be run in parallel; if the database 
+is in use, sqlalchemy will not be able to re-initialize it for the next test.</p>
+<h3 id="nginx">Nginx</h3>
+<p>By default, nginx listens on port 443 (with plain HTTP redirected to 443), and
+proxies to gunicorn on 127.0.0.1:8000.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../../js/base.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.0.4
+Build Date UTC : 2020-01-06 16:36:24
+-->

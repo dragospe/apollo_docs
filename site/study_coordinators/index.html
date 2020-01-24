@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Study Coordinators - Apollo-AF Docs</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../developers/">Apollo-AF Docs</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="active">
+                                <a href="./">Study Coordinators</a>
+                            </li>
+                            <li >
+                                <a href="../developers/">Developers</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="disabled">
+                                <a rel="next" >
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../developers/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#todo-data-retention-and-privacy-policy">TODO: Data Retention and Privacy Policy</a></li>
+        <li class="main "><a href="#study-coordinator-documentation">Study Coordinator Documentation</a></li>
+            <li><a href="#step-1-register-the-subject-in-redcap">Step 1: Register the Subject in REDCap</a></li>
+            <li><a href="#step-2-register-on-garmin-connect">Step 2: Register on Garmin Connect</a></li>
+            <li><a href="#step-3-authorize-apollo-af">Step 3: Authorize Apollo-AF</a></li>
+            <li><a href="#step-4-data-retention-and-privacy-policy">Step 4: Data Retention and Privacy Policy</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="todo-data-retention-and-privacy-policy">TODO: Data Retention and Privacy Policy</h1>
+<h1 id="study-coordinator-documentation">Study Coordinator Documentation</h1>
+<p>This documentation will guide you through enrolling a new subject into the Apollo-AF project. Briefly, you will need to:</p>
+<ul>
+<li>Enroll the subject in RedCAP.</li>
+<li>Create a Garmin Connect account for the subject.</li>
+<li>Authorize Apollo-AF to access the subject's data on Garmin Connect.</li>
+<li>Provide the subject relevant documents explaining our data retention and privacy policies.</li>
+</ul>
+<hr />
+<h2 id="step-1-register-the-subject-in-redcap">Step 1: Register the Subject in REDCap</h2>
+<p><a href="https://redcap.urmc.rochester.edu/redcap/">Click here</a> to go to the REDCap
+website, or type the following URL in the address bar:</p>
+<blockquote>
+<p>https://redcap.urmc.rochester.edu/redcap/</p>
+</blockquote>
+<p>Log-in using the dialog on the homepage. Under <code>My Projects</code>, click <code>APOLLO-AF.</code></p>
+<p>Select <code>Add / Edit Records</code> from the nagivation bar:</p>
+<p><img alt="REDCap Add/Edit" src="../img/rc_add.png" /></p>
+<p>Click <code>Add new record</code>:</p>
+<p><img alt="REDCap New Record" src="../img/rc_new.png" /></p>
+<p>and select the <code>Enrollment</code> button:</p>
+<p><img alt="REDCap Enrollment" src="../img/enrollment.png" /></p>
+<p>and fill out the form presented.</p>
+<p><img alt="REDCap Form" src="../img/rc_form.png" /></p>
+<p>At this point you should verify that the subject was added successfully. You will also need the Subject (participant) ID. Navigate to the <code>Record Status Dashboard</code> using the navigation bar on the left. Locate the <code>Participant ID</code> of the subject you just enrolled. <em>You will need this identifier later.</em></p>
+<p><img alt="REDCap Subject ID" src="../img/rc_pid.png" /></p>
+<h2 id="step-2-register-on-garmin-connect">Step 2: Register on Garmin Connect</h2>
+<p>The portal provided by Garmin to allow us access to subject's wearable data requires an account on <a href="https://connect.garmin.com">Garmin Connect</a>. Because we do not want subjects manually entering data or changing settings on the Garmin Connect website, you (the study coordinator) will register accounts on behalf of the subjects. You should use an email of the form</p>
+<blockquote>
+<p>subject_000@apollo-af.org</p>
+</blockquote>
+<p>that is, the word "subject", followed by an underscore, followed by a three-digit form of the subject identifier from Step 1 (with leading zeros, if applicable). </p>
+<p>All emails sent to <code>apollo-af.org</code> are forwarded to a URMC-controlled email
+address. You do not need to create an email address before using it to register
+on Garmin Connect.</p>
+<p><a href="https://connect.garmin.com/signin">Click here</a> to navigate to the Garmin Connect sign in page, or type the following URL in the address bar:</p>
+<blockquote>
+<p>https://connect.garmin.com/signin</p>
+</blockquote>
+<p>Beneath the sign-in dialog, click the account creation link.</p>
+<p><img alt="Garmin Connect Account Creation Link" src="../img/create.png" /></p>
+<p>Complete the form, and click "Create Account." Please use a password manager to keep track of the passwords to individual accounts. <strong>Do not reuse passwords between accounts.</strong></p>
+<p><img alt="Garmin Connect Account Creation Form" src="../img/creation_form.png" /></p>
+<hr />
+<h2 id="step-3-authorize-apollo-af">Step 3: Authorize Apollo-AF</h2>
+<p><strong>Note: You may already be logged in to Garmin Connect from the prior step, or from other activities relating to this study. If you logged in to an account on Garmin Connect, you will <em>not</em> see the account information displayed. Make sure you are enrolling the correct account into the correct study. If you are unsure, clear your browser's cache or conduct this step in a private browsing window. If you need assistance, please ask.</strong></p>
+<p><a href="https://auth.apollo-af.org/oauth/garmin/consent">Click here</a> to navigate to the Apollo-AF consent page, or type the following URL in the address bar:</p>
+<blockquote>
+<p>https://auth.apollo-af.org/oauth/garmin/consent</p>
+</blockquote>
+<p>Enter the Subject ID from step 1 when prompted:</p>
+<p><img alt="Apollo-AF Consent Form" src="../img/af_consent.png" /></p>
+<p>If you are still logged in to Garmin Connect from the previous step, will be automatically presented with the agreement form. If not, you will be prompted to enter the credentials for the account you created in step 2.</p>
+<p><img alt="Garmin Consent Login" src="../img/consent.png" /></p>
+<p>Next, agree to the prompt.</p>
+<p><img alt="Garmin Consent Agreement" src="../img/agree.png" /></p>
+<p>You will be redirected to <code>auth.apollo-af.org</code>, and should see a message reading</p>
+<blockquote>
+<p>You have successfully authorized us to monitor your Garmin data.</p>
+</blockquote>
+<p><strong>If you do not see this message, something has gone wrong. Please notify us at <a href="mailto:apollo-af@urmc.rochester.edu">apollo-af@urmc.rochester.edu</a>.</strong></p>
+<h2 id="step-4-data-retention-and-privacy-policy">Step 4: Data Retention and Privacy Policy</h2>
+<p><strong>To do</strong></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -8,6 +8,6 @@ This is the developmer documentation resource for the various components of the 
 * apollo_api
 * apollo_db
 * apollo_docs
-* [apollo_flask](../projects/apollo_flask/index.html)
+* [apollo_flask](projects/apollo_flask/)
 * geneactiv
 * redcap\_qol\_hacks
