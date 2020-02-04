@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../../../../img/favicon.ico">
+        <title>Apollo monitor - Apollo-AF Docs</title>
+        <link href="../../../../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../../../../">Apollo-AF Docs</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../../../../../study_coordinators/">Study Coordinators</a>
+                            </li>
+                            <li >
+                                <a href="../../../../">Developers</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#apollo_monitor">apollo_monitor</a></li>
+            <li><a href="#synopsis">Synopsis</a></li>
+            <li><a href="#read-this-development-notes">READ THIS: Development Notes</a></li>
+            <li><a href="#requirements">Requirements</a></li>
+            <li><a href="#adding-users">Adding Users</a></li>
+            <li><a href="#files">Files</a></li>
+            <li><a href="#variables">Variables</a></li>
+            <li><a href="#security-considerations">Security Considerations</a></li>
+            <li><a href="#network-considerations">Network Considerations</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="apollo_monitor">apollo_monitor</h1>
+<h2 id="synopsis">Synopsis</h2>
+<p>This role sets up the monitoring infrastructure (grafana) for the apollo project. It currently sets up grafana. Out of the box, this role will provision datasources, dashboards, and users, as well as configure the server. It will set up some user permissions. </p>
+<p><strong>Note:</strong> To completely restore an apollo_monitor instance, you must copy the <code>grafana.db</code> file and restore the appropriate configuration. Back this file up as necessary. A separate playbook will be developed to dump the <code>grafana.db</code> file to an S3 bucket.</p>
+<h2 id="read-this-development-notes">READ THIS: Development Notes</h2>
+<ul>
+<li>DNS is not currently setup, especially not for the dev branch.  A play may eventually be developed to handle the following (depending on how our PKI plays out), but in order to get TLS working with the appropriate security checks in place, you will have to:<ul>
+<li>On the server:<ul>
+<li>Add <code>apollo_monitor.dev</code> to the hosts file. Binding it to <code>127.0.0.1</code> is fine (for now), since grafana set up to listening on all interfaces </li>
+<li>Add the certificate authority used to sign the TLS dev certificate. This can be found in <code>hosts/dev/files/</code>. Copy it <code>/etc/pki/ca-trust/source/anchors/</code>.</li>
+<li>Run <code>update-ca-trust</code></li>
+</ul>
+</li>
+<li>On the client:<ul>
+<li>Add <code>apollo_monitor.dev</code> to the hosts file with the IP address of the server.</li>
+<li>Add the certificate authority used to sign the TLS dev certificate (as above, for Fedora; or your distribution's equivalent).</li>
+<li>Run <code>update-ca-trust</code> (for Fedora, for your distribution's equivalent).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<p>This role targets a CentOS 7 minimal installation with the apollo-af <code>common</code> role applied as a pre-requisite.</p>
+<h2 id="adding-users">Adding Users</h2>
+<p>To add a user, add a <code>[user]_account.yml</code> file to the <code>tasks/user_accounts/</code> directory with the appropriate variables filled out. See <code>tasks/user_accounts/template.yml</code> for an example. </p>
+<p>Users are added using the API grafana provides. This can get clunky: certian actions return error codes that can be hard to parse in ansible (for example, a 404 is returned when a non-existant user is queried.)</p>
+<h2 id="files">Files</h2>
+<p>The role expects two files and two folders in the <code>files/</code> directory:</p>
+<ul>
+<li>The <code>[env]_apollo_monitor_server.crt</code> file, containing the appropriate (signed) certificate to use for TLS.</li>
+<li>The (vaulted) <code>[env]_apollo_monitor_server.key</code> file, containing the corresponding private key.</li>
+<li>The <code>datasources/</code> directory, containing:<ul>
+<li><code>*.yml</code> files describing datasources to be provisioned by the server</li>
+</ul>
+</li>
+<li>The <code>dashboards/</code> directory, containing<ul>
+<li><code>*.yml</code> files describing dashboard providers</li>
+<li><code>*.json</code> files describing dashboards to be provisioned</li>
+</ul>
+</li>
+</ul>
+<p>See the <a href="https://grafana.com/docs/administration/provisioning/#example-datasource-config-file">grafana docs</a> for more information on provisioning.</p>
+<h2 id="variables">Variables</h2>
+<p>Global, user-defined variables are listed below. See the <code>template.yml</code> file described in the "Adding Users" section for variables related to adding users.</p>
+<table>
+<thead>
+<tr>
+<th>Variable:</th>
+<th>Choices/Defaults:</th>
+<th>Declared in:</th>
+<th>Comments:</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>apollo_monitor_grafana_admin_password</td>
+<td><em>Format</em>: A vaulted plaintext file containing the "admin" account password.</td>
+<td><code>defaults/main.yml</code></td>
+<td></td>
+</tr>
+<tr>
+<td>apollo_monitor_domain</td>
+<td><em>Format</em>: FQDN of the grafana server</td>
+<td><code>../../hosts/[env]/group_vars/apollo_monitor/apollo_monitor.yml</code></td>
+<td>The public facing domain name used to access grafana from a browser</td>
+</tr>
+<tr>
+<td>apollo_monitor_root_url</td>
+<td><em>Format</em>: URL</td>
+<td><code>../../hosts/[env]/group_vars/apollo_monitor/apollo_monitor.yml</code></td>
+<td>The full public facing url you use in browser, used for redirects and emails</td>
+</tr>
+<tr>
+<td>apollo_monitor_postgresql_backend_host</td>
+<td>Hostname or IP</td>
+<td><code>../../hosts/[env]/group_vars/apollo_monitor/apollo_monitor_postgresql_backend_details.yml</code></td>
+<td>The host name for grafana to connect to for it's backend database.</td>
+</tr>
+<tr>
+<td>apollo_monitor_postgresql_backend_database_name</td>
+<td><em>Format</em>: String</td>
+<td><code>../../hosts/[env]/group_vars/apollo_monitor/apollo_monitor_postgresql_backend_details.yml</code></td>
+<td>Name of the backend database to connect to</td>
+</tr>
+<tr>
+<td>apollo_monitor_postgresql_backend_database_username</td>
+<td><em>Format</em>: String</td>
+<td><code>../../hosts/[env]/group_vars/apollo_monitor/apollo_monitor_postgresql_backend_details.yml</code></td>
+<td>Username of the database role grafana should connect as for it's backend.</td>
+</tr>
+<tr>
+<td>apollo_monitor_postgresql_backend_database_password</td>
+<td><em>Format</em>: Vaulted string</td>
+<td><code>../../hosts/[env]/group_vars/apollo_monitor/apollo_monitor_postgresql_backend_details.yml</code></td>
+<td>Vaulted password of the database role grafana should connect as for it's backend.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="security-considerations">Security Considerations</h2>
+<p><strong>TODO</strong>: 
+* evaluate if the vaulted password for apollo_monitor_grafana_admin_password  is getting logged anywhere (ansible or grafana)
+* Evaluate if grafana is storing passwords (user, datasource, etc in plaintext)</p>
+<p>This role sets up TLS and sets some options in <code>grafana.ini</code> to ensure security. Grafana has built-in brute-force throttling, so fail2ban has not been configured. </p>
+<p>As of this writing (2019-06-26), it appears that certain API calls must use Basic Auth (read: plaintext) to authenticate (rather than API tokens). This is sub-optimal, but certain tasks can only be automated in this way. Ensure that TLS is working!</p>
+<p>Reading through various bug reports, I have concluded that security is not a first-class concern of the grafana developers, although it is getting worked on. I am uncertain whether or data source passwords are being stored in plaintext.</p>
+<h2 id="network-considerations">Network Considerations</h2>
+<p>Nginx should be configured to listen on port 80,443 on the name <code>dash.apollo-af.org</code> and proxy the requests (<strong>TLS only</strong>) to socket that grafana is listening on. </p>
+<p>The default umask for the servers in this project is restrictive. To allow nginx and grafana to communicate, you must:</p>
+<ul>
+<li>Set the selinux context for <code>"/grafana_socket(/.*)?"</code> to <code>system_u:object_r:httpd_var_run_t:s0</code></li>
+<li>Create a group <code>grafana_socket</code></li>
+<li>Add users <code>nginx</code> and <code>grafana</code> to the <code>grafana_socket</code> group </li>
+<li>Restart nginx (so that the new group takes effect)</li>
+<li>Create a folder <code>/grafana_socket</code> with owner <code>root</code>, group <code>grafana</code>, and permissions <code>2770</code>. Make sure that the appropriate SELinux context is applied.</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../../../../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../../../../js/base.js" defer></script>
+        <script src="../../../../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

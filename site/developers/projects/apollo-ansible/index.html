@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Apollo-AF Docs</title>
+        <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../../">Apollo-AF Docs</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../../../study_coordinators/">Study Coordinators</a>
+                            </li>
+                            <li >
+                                <a href="../../">Developers</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#apollo-ansible">apollo-ansible</a></li>
+            <li><a href="#infrastructure-overview">Infrastructure Overview</a></li>
+            <li><a href="#network-overview">Network Overview</a></li>
+            <li><a href="#users-and-groups">Users and groups</a></li>
+            <li><a href="#crypto-and-security-overview">Crypto and Security Overview</a></li>
+            <li><a href="#deployment">Deployment</a></li>
+            <li><a href="#role-overview">Role Overview</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="apollo-ansible">apollo-ansible</h1>
+<p>Your one-stop-shop for deployment playbooks and info. Click <a href="#role-overview">here</a> to see details about a specific role.</p>
+<h2 id="infrastructure-overview">Infrastructure Overview</h2>
+<p>The current deployment is across two virtual servers from URMC's academic IT. It doesn't appear that we can reimage these, so don't fuck up.</p>
+<p>The first server is: 
+    <code>apollosql.urmc-sh.rocheter.edu</code>
+  which houses:
+   * a postgresql database cluster, with a database to store Garmin data and a database grafana uses for its backend
+   * grafana
+   * an nginx server to proxy requests to grafana and serve the static documentation site.</p>
+<p>The second server is:
+  <code>apolloweb.urmc-sh.rochester.edu</code>
+ which houses an nginx server that proxies requests to gunicorn/flask. </p>
+<h2 id="network-overview">Network Overview</h2>
+<p>The below information is current as of 2020-01-30:</p>
+<h3 id="apollosql">apollosql</h3>
+<ul>
+<li>Name: <code>apolloweb.urmc-sh.rochester.edu</code></li>
+<li>IPv4 Address (Static): <code>172.168.139.232/22</code></li>
+<li>Gateway: <code>172.16.139.250</code></li>
+<li>DNS Servers: <code>172.17.254.30; 172.17.254.130</code></li>
+<li>Firewalld services: <code>dhcpv6-client http https postgresql ssh</code></li>
+<li>Nginx:<ul>
+<li>listens on port 80, all names/addresses for redirects to https</li>
+<li>Listens on all addresses, port 443, on names:<ul>
+<li><code>docs.apollo-af.org</code> (served statically)</li>
+<li><code>dash.apollo-af.org</code> (proxied to <code>/grafana_socket/grafana.socket</code>)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Postgresql:<ul>
+<li>Listens on port 5432, all addresses. The user <code>apollo</code> is the only user allowed to connect over the network, and only to the <code>apollo-site</code> database. md5 authentication is used</li>
+<li>Listens on unix socket. The <code>grafana</code> and <code>postgres</code> users both use peer authentication.</li>
+</ul>
+</li>
+</ul>
+<h3 id="apolloweb">apolloweb</h3>
+<p><strong>NOTE: This server obtains its network info from DHCP!!</strong> It might change. We don't know.
+ * Name: <code>apolloweb.urmc-sh.rochester.edu</code>
+ * IPv4 Address (Static): <code>10.221.3.133/24</code>
+ * Gateway: <code>10.221.3.250</code>
+ * DNS Servers: <code>172.17.254.30; 172.17.254.130</code>
+ * Firewalld services: <code>dhcpv6-client http https ssh</code>
+ * Nginx:
+     * listens on port 80, all names/addresses for redirects to https
+     * Listens on all addresses, port 443, on name <code>auth.apollo-af.org</code>:
+         * Location <code>/</code> is proxied to gunicorn, listening on localhost port 8000
+         * Location <code>/api_client/garmin/</code> is proxied to gunicorn on localhost, port 8000.   Garmin sends data using the following IPs, which are whitelisted:
+             * 98.100.124.0/24
+             * 98.100.125.0/24
+             * 204.77.162.0/24
+             * 204.77.163.0/24</p>
+<h2 id="users-and-groups">Users and groups</h2>
+<p>The following users are added in the <code>common</code> role and should exist on all hosts. They are handled individually by the ansible scripts in the <code>tasks/user_accounts/</code> directory. Currently the users that should exist on all hosts are:
+ * apage2 (provided by Active Directory in the <code>urmc-sh.rochester.edu</code> domain)
+ * pdragos (provided by Active Directory in the <code>urmc-sh.rochester.edu</code> domain)
+ * apollo (local user)</p>
+<p>On <code>apollosql</code>, the users <code>nginx</code> and <code>grafana</code> (installed by their respective applications) should both be part of the <code>grafana_socket</code> group. This is necessary to allow nginx and grafana to communicate over a unix socket in a SGID directory.</p>
+<h2 id="crypto-and-security-overview">Crypto and Security Overview</h2>
+<p>Passwords and keys should be stored in a password manager or ansible-vault'ed. 
+ * Postgresql communicates over TLS with self-signed cert. Authentication is either local (<code>peer</code>) or md5. 
+ * Grafana seems to require a plaintext database password in its configuration file. Care should be taken to ensure that the proper permissions are set on <code>/etc/grafana/grafana.ini</code>.
+ * Nginx has individual TLS certificates for all host names it is responsible for. As of 2020-01-30, we do not have public IPs for the virtual machines; when we do, certbot will be responsible for maintaining these certificates.
+ * A restrictive umask is in place. Be aware of this.
+ * SELinux should work in enforcing mode.</p>
+<h2 id="deployment">Deployment</h2>
+<p>To get running quickly:
+* Set up your inventory file at <code>hosts/prod/inventory</code>. You'll need an <code>apolloweb</code> host and an <code>apollosql</code> host.
+* Run <code>ansible-playbook -K deploy_to_prod.yml --vault-password-file /path/to/vault_pass -i hosts/prod/inventory</code></p>
+<h3 id="lifecycle-environments">Lifecycle Environments</h3>
+<p>This repository is designed to configure development (<code>dev</code>), testing (<code>test</code>), and production (<code>prod</code>) lifecycle enviornments. To do so, three different inventory files in their respective directories under the <code>hosts/[lifecycle state]/</code> directory. </p>
+<p>Variables specific to each lifecycle state may be set in accordance with inventory-based variables (<a href="https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#assigning-a-variable-to-many-machines-group-variables"><code>group_vars</code></a>  , <a href="https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#assigning-a-variable-to-one-machine-host-variables"><code>host_vars</code></a>, etc.)</p>
+<p><em>Note:</em> In ansible, <code>group_vars</code> take precedence over variables in <code>roles/[rolename]/defaults/main.yml</code>. </p>
+<h3 id="playbook-flow-current-as-of-2020-01-30">Playbook flow (current as of 2020-01-30):</h3>
+<ul>
+<li>set up all servers (<code>apolloweb</code> and <code>apollosql</code> with the common role</li>
+<li>cetup postgresql</li>
+<li>configure postgres</li>
+<li>do a hacky work-around to get SSL working</li>
+<li>set up nginx</li>
+<li>open ports</li>
+<li>set up the webapp</li>
+<li>set up grafana</li>
+<li>set up the documentation site</li>
+</ul>
+<h3 id="variables">Variables:</h3>
+<p>Where to find them: </p>
+<ul>
+<li><code>hosts/[lifecycle state]/group_vars</code> sets playbook-wide variables. This should be the primary source for configuration parameters.</li>
+<li>The playbook itself. This is where some more verbose, static parameters should be set (e.g., <code>pg_hba.conf</code> or the <code>nginx.conf</code> entries. </li>
+</ul>
+<p>Look at the relevant files to get an idea of the variables you need to set.</p>
+<h3 id="variables_1">Variables</h3>
+<p>Variables that relate to site-wide or lifecycle-wide configuration are listed below.</p>
+<p>Complete descriptions of <em>role-specific</em> variables (required or optional) may be found in the respective <code>README.md</code> files. </p>
+<p>The variables listed below are <em>generally</em> defined in <code>hosts/[lifecycle]/group_vars/all.yml</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lifecycle_state</td>
+<td>Either 'dev', 'test', or 'prod', depending on the inventory file used.</td>
+<td>prod</td>
+</tr>
+<tr>
+<td>apollo_site_database_name</td>
+<td>The name of the database the main API site will use</td>
+<td>apollo_site</td>
+</tr>
+<tr>
+<td>apollo_site_database_user</td>
+<td>The username that SQLalchemy/flask will connect as</td>
+<td>apollo</td>
+</tr>
+<tr>
+<td>apollo_site_database_password</td>
+<td>a vaulted password to authenticate the postgresql user for the main API site</td>
+<td><code>!vault | $ANSIBLE_VAULT;1.1;AES256         36643264643431346165613138326261356335326265353337363762663836653566336135303366      343365366...</code></td>
+</tr>
+<tr>
+<td>apollo_site_database_connection_cidr_ip</td>
+<td>The IPv4 address that the apollo site will connect to its backend database from, for whitelisting purposes</td>
+<td><code>192.168.122.191/24</code></td>
+</tr>
+<tr>
+<td>apollo_site_database_uri</td>
+<td>The URI that the SQLalchemy should use to connect to the database</td>
+<td><code>"postgresql://{{ apollo_site_database_user }}:{{ apollo_site_database_password }}@apollosql.urmc-sh.rochester.edu:5432/{{ apollo_site_database_name }}"</code></td>
+</tr>
+<tr>
+<td>apollo_monitor_domain</td>
+<td>The domain name (for grafana)</td>
+<td><code>dash.apollo-af.org</code></td>
+</tr>
+<tr>
+<td>apollo_monitor_root_url</td>
+<td>The <em>full</em> URL used for the site. Needed for redirects.</td>
+<td><code>https://dash.apollo-af.org/</code></td>
+</tr>
+<tr>
+<td>apollo_monitor_postgresql_backend_host</td>
+<td>Controls how grafana accesses its backend database</td>
+<td><code>/run/postgresql/</code></td>
+</tr>
+<tr>
+<td>apollo_monitor_postgresql_backend_database_name</td>
+<td>The name of the database grafana uses as its backend</td>
+<td><code>grafana</code></td>
+</tr>
+<tr>
+<td>apollo_monitor_postgresql_backend_database_username</td>
+<td>The username grafana connects to its backend database with</td>
+<td><code>grafana</code></td>
+</tr>
+<tr>
+<td>apollo_monitor_postgresql_backend_database_password</td>
+<td>The vaulted password grafana uses to connect to its backend database</td>
+<td><code>!vault |$ANSIBLE_VAULT;1.1;AES2560  353035646165360356233370...</code></td>
+</tr>
+<tr>
+<td>apollo_api_nginx_server_name</td>
+<td>The name that nginx listens on to proxy to the main site</td>
+<td><code>auth.apollo-af.org</code></td>
+</tr>
+<tr>
+<td>apollo_docs_nginx_server_name</td>
+<td>The name that nginx listens on to proxy to the documentation site</td>
+<td><code>docs.apollo-af.org</code></td>
+</tr>
+<tr>
+<td>apollo_monitor_nginx_server_name</td>
+<td>The name that nginx listens on to proxy to grafana</td>
+<td><code>dash.apollo-af.org</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="role-overview">Role Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Description</th>
+<th>Pre-requisites</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="roles/apollo_api">apollo_api</a></td>
+<td>Sets up flask and gunicorn to serve the main site</td>
+<td><code>common, nginxinc.nginx</code></td>
+</tr>
+<tr>
+<td><a href="roles/apollo_docs">apollo_docs</a></td>
+<td>Sets up the static mkdocs documentation site</td>
+<td><code>common, nginxinc.nginx</code></td>
+</tr>
+<tr>
+<td><a href="roles/apollo_monitor">apollo_monitor</a></td>
+<td>Configures a host to perform monitoring functions (grafana).</td>
+<td><code>common, nginxinc.nginx</code>. Requires a a backend database, so <em>some</em> host must have the <code>geerlingguy.postgresql</code> and <code>apollo_pg</code> roles applied as well</td>
+</tr>
+<tr>
+<td><a href="roles/apollo_pg">apollo_pg</a></td>
+<td>Configures a host running postgreSQL to function as apollo's long-term data store. Note: the <code>geerlingguy.postgresql</code> role must already be</td>
+<td><code>common, geerlingguy.postgresql</code></td>
+</tr>
+<tr>
+<td><a href="roles/apollo_scripts">apollo_scripts</a></td>
+<td>Configures a host to run scripts related to geneACTIV, medtronic, REDCap, etc.</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td><a href="roles/common">common</a></td>
+<td>Common configuration applied to all hosts, including common software, user accounts, security hardening, etc.</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>geerlingguy.postgresql</td>
+<td>Configures a host with a postgresql server. Pulled from ansible-galaxy; do not modify.</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>nginxinc.nginx</td>
+<td>Configures a host with an nginx server. Pulled from ansible-galaxy; do not modify</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../../js/base.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.0.4
+Build Date UTC : 2020-02-04 18:08:23
+-->
