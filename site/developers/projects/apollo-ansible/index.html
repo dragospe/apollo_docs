@@ -85,10 +85,12 @@
 <p>The current deployment is across two virtual servers from URMC's academic IT. It doesn't appear that we can reimage these, so don't fuck up.</p>
 <p>The first server is: 
     <code>apollosql.urmc-sh.rocheter.edu</code>
-  which houses:
-   * a postgresql database cluster, with a database to store Garmin data and a database grafana uses for its backend
-   * grafana
-   * an nginx server to proxy requests to grafana and serve the static documentation site.</p>
+  which houses:</p>
+<ul>
+<li>a postgresql database cluster, with a database to store Garmin data and a database grafana uses for its backend</li>
+<li>grafana</li>
+<li>an nginx server to proxy requests to grafana and serve the static documentation site.</li>
+</ul>
 <p>The second server is:
   <code>apolloweb.urmc-sh.rochester.edu</code>
  which houses an nginx server that proxies requests to gunicorn/flask. </p>
@@ -172,7 +174,6 @@
 <li>The playbook itself. This is where some more verbose, static parameters should be set (e.g., <code>pg_hba.conf</code> or the <code>nginx.conf</code> entries. </li>
 </ul>
 <p>Look at the relevant files to get an idea of the variables you need to set.</p>
-<h3 id="variables_1">Variables</h3>
 <p>Variables that relate to site-wide or lifecycle-wide configuration are listed below.</p>
 <p>Complete descriptions of <em>role-specific</em> variables (required or optional) may be found in the respective <code>README.md</code> files. </p>
 <p>The variables listed below are <em>generally</em> defined in <code>hosts/[lifecycle]/group_vars/all.yml</code>.</p>
@@ -189,6 +190,11 @@
 <td>lifecycle_state</td>
 <td>Either 'dev', 'test', or 'prod', depending on the inventory file used.</td>
 <td>prod</td>
+</tr>
+<tr>
+<td>project_name</td>
+<td>The name that ansible will use for this project</td>
+<td>APOLLO-AF</td>
 </tr>
 <tr>
 <td>apollo_site_database_name</td>
@@ -396,5 +402,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-02-04 18:08:23
+Build Date UTC : 2020-02-07 17:50:50
 -->

@@ -7,6 +7,7 @@ The current deployment is across two virtual servers from URMC's academic IT. It
 The first server is: 
     `apollosql.urmc-sh.rocheter.edu`
   which houses:
+
    * a postgresql database cluster, with a database to store Garmin data and a database grafana uses for its backend
    * grafana
    * an nginx server to proxy requests to grafana and serve the static documentation site.
@@ -88,6 +89,7 @@ Variables specific to each lifecycle state may be set in accordance with invento
  * set up the webapp
  * set up grafana
  * set up the documentation site
+
 ### Variables:
 Where to find them: 
 
@@ -96,7 +98,6 @@ Where to find them:
 
 Look at the relevant files to get an idea of the variables you need to set.
 
-### Variables
 Variables that relate to site-wide or lifecycle-wide configuration are listed below.
 
 Complete descriptions of *role-specific* variables (required or optional) may be found in the respective `README.md` files. 
@@ -106,6 +107,7 @@ The variables listed below are *generally* defined in `hosts/[lifecycle]/group_v
 |Variable      | Description        | Example                                                                   |
 |-------------|-------------------------------------------------------------------------------------------------------------------|--------------|
 |lifecycle_state| Either 'dev', 'test', or 'prod', depending on the inventory file used. | prod
+| project_name | The name that ansible will use for this project | APOLLO-AF
 |apollo_site_database_name | The name of the database the main API site will use | apollo_site
 |apollo_site_database_user | The username that SQLalchemy/flask will connect as | apollo
 apollo_site_database_password | a vaulted password to authenticate the postgresql user for the main API site | `!vault | $ANSIBLE_VAULT;1.1;AES256         36643264643431346165613138326261356335326265353337363762663836653566336135303366      343365366...`

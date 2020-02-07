@@ -69,11 +69,45 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#apollo_api">apollo_api</a></li>
+            <li><a href="#variables">Variables</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="apollo_api">apollo_api</h1></div>
+<h1 id="apollo_api">apollo_api</h1>
+<h3 id="variables">Variables</h3>
+<p>Role specific variables:</p>
+<table>
+<thead>
+<tr>
+<th align="left">name</th>
+<th align="left">usage</th>
+<th align="left">default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>apollo_flask_git_uri</code></td>
+<td align="left">The URI used to pull down a git repo. You may need to change this to switch to a development branch.</td>
+<td align="left"><code>ssh://git@bitbucket.org/pdragos1/apollo_flask.git</code></td>
+</tr>
+<tr>
+<td align="left"><code>apollo_flask_git_version</code></td>
+<td align="left">The version used to pull down the repository</td>
+<td align="left"><code>HEAD</code></td>
+</tr>
+<tr>
+<td align="left"><code>apollo_flask_application_directory</code></td>
+<td align="left">The directory into which the flask app will be installed.</td>
+<td align="left"><code>/usr/lib/apollo_site</code></td>
+</tr>
+<tr>
+<td align="left"><code>apollo_flask_log_directory</code></td>
+<td align="left">The directory in which gunicorn will keep its logs</td>
+<td align="left"><code>/var/log/apollo_site</code></td>
+</tr>
+</tbody>
+</table></div>
         </div>
 
         <footer class="col-md-12">
