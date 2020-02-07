@@ -5,7 +5,6 @@ This is the developmer documentation resource for the various components of the 
 ## Repositories
 
 * [apollo-ansible](projects/apollo-ansible/)
-* apollo_api
 * apollo_db
 * apollo_docs
 * [apollo_flask](projects/apollo_flask/)

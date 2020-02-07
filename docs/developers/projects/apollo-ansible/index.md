@@ -8,9 +8,9 @@ The first server is:
     `apollosql.urmc-sh.rocheter.edu`
   which houses:
 
-   * a postgresql database cluster, with a database to store Garmin data and a database grafana uses for its backend
-   * grafana
-   * an nginx server to proxy requests to grafana and serve the static documentation site.
+ * a postgresql database cluster, with a database to store Garmin data and a database grafana uses for its backend
+ * grafana
+ * an nginx server to proxy requests to grafana and serve the static documentation site.
  
  The second server is:
   `apolloweb.urmc-sh.rochester.edu`
@@ -35,6 +35,7 @@ The below information is current as of 2020-01-30:
 
 ### apolloweb
 __NOTE: This server obtains its network info from DHCP!!__ It might change. We don't know.
+ 
  * Name: `apolloweb.urmc-sh.rochester.edu`
  * IPv4 Address (Static): `10.221.3.133/24`
  * Gateway: `10.221.3.250`
@@ -60,6 +61,7 @@ On `apollosql`, the users `nginx` and `grafana` (installed by their respective a
 
 ## Crypto and Security Overview
 Passwords and keys should be stored in a password manager or ansible-vault'ed. 
+
  * Postgresql communicates over TLS with self-signed cert. Authentication is either local (`peer`) or md5. 
  * Grafana seems to require a plaintext database password in its configuration file. Care should be taken to ensure that the proper permissions are set on `/etc/grafana/grafana.ini`.
  * Nginx has individual TLS certificates for all host names it is responsible for. As of 2020-01-30, we do not have public IPs for the virtual machines; when we do, certbot will be responsible for maintaining these certificates.
@@ -68,8 +70,10 @@ Passwords and keys should be stored in a password manager or ansible-vault'ed.
 
 ## Deployment
 To get running quickly:
-* Set up your inventory file at `hosts/prod/inventory`. You'll need an `apolloweb` host and an `apollosql` host.
-* Run ```ansible-playbook -K deploy_to_prod.yml --vault-password-file /path/to/vault_pass -i hosts/prod/inventory```
+
+ * Set up your inventory file at `hosts/prod/inventory`. You'll need an `apolloweb` host and an `apollosql` host.
+ * Run ```ansible-playbook -K deploy_to_prod.yml --vault-password-file /path/to/vault_pass -i hosts/prod/inventory```
+
 ### Lifecycle Environments
 
 
@@ -93,8 +97,8 @@ Variables specific to each lifecycle state may be set in accordance with invento
 ### Variables:
 Where to find them: 
 
-*  `hosts/[lifecycle state]/group_vars` sets playbook-wide variables. This should be the primary source for configuration parameters.
-*  The playbook itself. This is where some more verbose, static parameters should be set (e.g., `pg_hba.conf` or the `nginx.conf` entries. 
+ *  `hosts/[lifecycle state]/group_vars` sets playbook-wide variables. This should be the primary source for configuration parameters.
+ *  The playbook itself. This is where some more verbose, static parameters should be set (e.g., `pg_hba.conf` or the `nginx.conf` entries. 
 
 Look at the relevant files to get an idea of the variables you need to set.
 

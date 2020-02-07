@@ -39,7 +39,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="../../">Apollo-AF Docs</a>
+                    <a class="navbar-brand" href="../../..">Apollo-AF Docs</a>
                 </div>
 
                 <!-- Expanded navigation -->
@@ -49,8 +49,48 @@
                             <li >
                                 <a href="../../../study_coordinators/">Study Coordinators</a>
                             </li>
-                            <li >
-                                <a href="../../">Developers</a>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Developers <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../">Developer Homepage</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Projects</a>
+    <ul class="dropdown-menu">
+            
+  <li class="dropdown-submenu">
+    <a href="#">apollo-ansible</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="./">Repo Homepage</a>
+</li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">Roles</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="roles/apollo_api/">apollo_api</a>
+</li>
+            
+<li >
+    <a href="roles/apollo_docs/">apollo_docs</a>
+</li>
+            
+<li >
+    <a href="roles/apollo_monitor/">apollo_monitor</a>
+</li>
+    </ul>
+  </li>
+    </ul>
+  </li>
+    </ul>
+  </li>
+                                </ul>
                             </li>
                         </ul>
 
@@ -119,21 +159,29 @@
 </li>
 </ul>
 <h3 id="apolloweb">apolloweb</h3>
-<p><strong>NOTE: This server obtains its network info from DHCP!!</strong> It might change. We don't know.
- * Name: <code>apolloweb.urmc-sh.rochester.edu</code>
- * IPv4 Address (Static): <code>10.221.3.133/24</code>
- * Gateway: <code>10.221.3.250</code>
- * DNS Servers: <code>172.17.254.30; 172.17.254.130</code>
- * Firewalld services: <code>dhcpv6-client http https ssh</code>
- * Nginx:
-     * listens on port 80, all names/addresses for redirects to https
-     * Listens on all addresses, port 443, on name <code>auth.apollo-af.org</code>:
-         * Location <code>/</code> is proxied to gunicorn, listening on localhost port 8000
-         * Location <code>/api_client/garmin/</code> is proxied to gunicorn on localhost, port 8000.   Garmin sends data using the following IPs, which are whitelisted:
-             * 98.100.124.0/24
-             * 98.100.125.0/24
-             * 204.77.162.0/24
-             * 204.77.163.0/24</p>
+<p><strong>NOTE: This server obtains its network info from DHCP!!</strong> It might change. We don't know.</p>
+<ul>
+<li>Name: <code>apolloweb.urmc-sh.rochester.edu</code></li>
+<li>IPv4 Address (Static): <code>10.221.3.133/24</code></li>
+<li>Gateway: <code>10.221.3.250</code></li>
+<li>DNS Servers: <code>172.17.254.30; 172.17.254.130</code></li>
+<li>Firewalld services: <code>dhcpv6-client http https ssh</code></li>
+<li>Nginx:<ul>
+<li>listens on port 80, all names/addresses for redirects to https</li>
+<li>Listens on all addresses, port 443, on name <code>auth.apollo-af.org</code>:<ul>
+<li>Location <code>/</code> is proxied to gunicorn, listening on localhost port 8000</li>
+<li>Location <code>/api_client/garmin/</code> is proxied to gunicorn on localhost, port 8000.   Garmin sends data using the following IPs, which are whitelisted:<ul>
+<li>98.100.124.0/24</li>
+<li>98.100.125.0/24</li>
+<li>204.77.162.0/24</li>
+<li>204.77.163.0/24</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h2 id="users-and-groups">Users and groups</h2>
 <p>The following users are added in the <code>common</code> role and should exist on all hosts. They are handled individually by the ansible scripts in the <code>tasks/user_accounts/</code> directory. Currently the users that should exist on all hosts are:
  * apage2 (provided by Active Directory in the <code>urmc-sh.rochester.edu</code> domain)
@@ -141,16 +189,20 @@
  * apollo (local user)</p>
 <p>On <code>apollosql</code>, the users <code>nginx</code> and <code>grafana</code> (installed by their respective applications) should both be part of the <code>grafana_socket</code> group. This is necessary to allow nginx and grafana to communicate over a unix socket in a SGID directory.</p>
 <h2 id="crypto-and-security-overview">Crypto and Security Overview</h2>
-<p>Passwords and keys should be stored in a password manager or ansible-vault'ed. 
- * Postgresql communicates over TLS with self-signed cert. Authentication is either local (<code>peer</code>) or md5. 
- * Grafana seems to require a plaintext database password in its configuration file. Care should be taken to ensure that the proper permissions are set on <code>/etc/grafana/grafana.ini</code>.
- * Nginx has individual TLS certificates for all host names it is responsible for. As of 2020-01-30, we do not have public IPs for the virtual machines; when we do, certbot will be responsible for maintaining these certificates.
- * A restrictive umask is in place. Be aware of this.
- * SELinux should work in enforcing mode.</p>
+<p>Passwords and keys should be stored in a password manager or ansible-vault'ed. </p>
+<ul>
+<li>Postgresql communicates over TLS with self-signed cert. Authentication is either local (<code>peer</code>) or md5. </li>
+<li>Grafana seems to require a plaintext database password in its configuration file. Care should be taken to ensure that the proper permissions are set on <code>/etc/grafana/grafana.ini</code>.</li>
+<li>Nginx has individual TLS certificates for all host names it is responsible for. As of 2020-01-30, we do not have public IPs for the virtual machines; when we do, certbot will be responsible for maintaining these certificates.</li>
+<li>A restrictive umask is in place. Be aware of this.</li>
+<li>SELinux should work in enforcing mode.</li>
+</ul>
 <h2 id="deployment">Deployment</h2>
-<p>To get running quickly:
-* Set up your inventory file at <code>hosts/prod/inventory</code>. You'll need an <code>apolloweb</code> host and an <code>apollosql</code> host.
-* Run <code>ansible-playbook -K deploy_to_prod.yml --vault-password-file /path/to/vault_pass -i hosts/prod/inventory</code></p>
+<p>To get running quickly:</p>
+<ul>
+<li>Set up your inventory file at <code>hosts/prod/inventory</code>. You'll need an <code>apolloweb</code> host and an <code>apollosql</code> host.</li>
+<li>Run <code>ansible-playbook -K deploy_to_prod.yml --vault-password-file /path/to/vault_pass -i hosts/prod/inventory</code></li>
+</ul>
 <h3 id="lifecycle-environments">Lifecycle Environments</h3>
 <p>This repository is designed to configure development (<code>dev</code>), testing (<code>test</code>), and production (<code>prod</code>) lifecycle enviornments. To do so, three different inventory files in their respective directories under the <code>hosts/[lifecycle state]/</code> directory. </p>
 <p>Variables specific to each lifecycle state may be set in accordance with inventory-based variables (<a href="https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#assigning-a-variable-to-many-machines-group-variables"><code>group_vars</code></a>  , <a href="https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#assigning-a-variable-to-one-machine-host-variables"><code>host_vars</code></a>, etc.)</p>
@@ -402,5 +454,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-02-07 17:50:50
+Build Date UTC : 2020-02-07 18:58:47
 -->

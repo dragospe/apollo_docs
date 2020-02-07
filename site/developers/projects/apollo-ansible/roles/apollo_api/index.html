@@ -39,7 +39,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="../../../../">Apollo-AF Docs</a>
+                    <a class="navbar-brand" href="../../../../..">Apollo-AF Docs</a>
                 </div>
 
                 <!-- Expanded navigation -->
@@ -49,8 +49,48 @@
                             <li >
                                 <a href="../../../../../study_coordinators/">Study Coordinators</a>
                             </li>
-                            <li >
-                                <a href="../../../../">Developers</a>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Developers <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../../">Developer Homepage</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Projects</a>
+    <ul class="dropdown-menu">
+            
+  <li class="dropdown-submenu">
+    <a href="#">apollo-ansible</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../">Repo Homepage</a>
+</li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">Roles</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="./">apollo_api</a>
+</li>
+            
+<li >
+    <a href="../apollo_docs/">apollo_docs</a>
+</li>
+            
+<li >
+    <a href="../apollo_monitor/">apollo_monitor</a>
+</li>
+    </ul>
+  </li>
+    </ul>
+  </li>
+    </ul>
+  </li>
+                                </ul>
                             </li>
                         </ul>
 
@@ -69,13 +109,23 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#apollo_api">apollo_api</a></li>
+            <li><a href="#prerequisites">Prerequisites</a></li>
+            <li><a href="#overview">Overview</a></li>
             <li><a href="#variables">Variables</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
 <h1 id="apollo_api">apollo_api</h1>
-<h3 id="variables">Variables</h3>
+<p>This role configures and deploys the main flask app used for pulling down Garmin API data and storing it in the database. </p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>The <code>nginxinc.nginx</code> and <code>common</code> roles should be applied first. The reverse-proxying setup between gunicorn and nginx should occur in the <code>nginxinc.nginx</code> role. </p>
+<h2 id="overview">Overview</h2>
+<p>This role pulls down the <code>apollo_flask</code> repository from bitbucket using a private key and installs the app in the directory <code>/usr/lib/apollo_site</code> by default (see the <em>Variables</em> section below.) The application is installed in a python virtual environment.</p>
+<p>The application requires a valid <code>instance/config.py</code> file to pull configuration data from. This is where API keys, the project name, and flask secrets are set. <em>Keep sensitive information valuted.</em> </p>
+<p>The role also tags port 8000 (gunicorn's default) with the <code>http_port_t</code> SELinux type. </p>
+<p>The role also sets up and enables a systemd service.</p>
+<h2 id="variables">Variables</h2>
 <p>Role specific variables:</p>
 <table>
 <thead>

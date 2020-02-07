@@ -1,4 +1,13 @@
 site_name: Apollo-AF Docs
 nav:
 - Study Coordinators: 'study_coordinators.md'
-- Developers: 'developers/index.md'
+- Developers: 
+    - Developer Homepage: 'developers/'
+    - Projects: 
+        - apollo-ansible :
+            - Repo Homepage: 'developers/projects/apollo-ansible/'
+            - Roles:
+                - apollo_api: 'developers/projects/apollo-ansible/roles/apollo_api/'
+                - apollo_docs: 'developers/projects/apollo-ansible/roles/apollo_docs/'
+                - apollo_monitor: 'developers/projects/apollo-ansible/roles/apollo_monitor/'
+
